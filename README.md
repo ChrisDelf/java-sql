@@ -35,22 +35,37 @@ Answer the following data queries. Keep track of the SQL you write by pasting it
 
 ### find all customers that live in London. Returns 6 records.
 > This can be done with SELECT and WHERE clauses
+ SELECT *
+ FROM customers
+ WHERE city = 'London'
 
 
 ### find all customers with postal code 1010. Returns 3 customers.
 > This can be done with SELECT and WHERE clauses
+SELECT *
+FROM customers
+WHERE postal_code = '1010'
 
 
 ### find the phone number for the supplier with the id 11. Should be (010) 9984510.
 > This can be done with SELECT and WHERE clauses
+SELECT phone_number
+FROM suppliers
+WHERE supplier_id = 11
 
 
 ### list orders descending by the order date. The order with date 1998-05-06 should be at the top.
 > This can be done with SELECT, WHERE, and ORDER BY clauses
+SELECT order_date
+FROM orders
+ORDER BY order_date DESC
 
 
 ### find all suppliers who have names longer than 20 characters. You can use `length(company_name)` to get the length of the name. Returns 11 records.
 > This can be done with SELECT and WHERE clauses
+SELECT *
+FROM suppliers
+WHERE length(company_name) > 20
 
 
 ### find all customers that include the word 'MARKET' in the contact title. Should return 19 records.
@@ -60,8 +75,13 @@ Answer the following data queries. Keep track of the SQL you write by pasting it
 
 > Remember to convert your contact title to all upper case for case insenstive comparing so upper(contact_title)
 
+SELECT *
+FROM customers
+WHERE contact_title LIKE '%Market%'
 
-### add a customer record for   
+
+
+### add a customer record for
 * customer id is 'SHIRE'
 * company name is 'The Shire'
 * contact name is 'Bilbo Baggins'
@@ -71,9 +91,16 @@ Answer the following data queries. Keep track of the SQL you write by pasting it
 * the country is 'Middle Earth'
 > This can be done with the INSERT INTO clause
 
+INSERT INTO customers(customer_id, company_name, contact_name, address, city, postal_code, country)
+Values ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit-Hole', 'Bag End', '111', 'Middle Earth')
+
+
 
 ### update _Bilbo Baggins_ record so that the postal code changes to _"11122"_.
 > This can be done with UPDATE and WHERE clauses
+UPDATE customers
+SET postal_code = '11122'
+WHERE contact_name LIKE '%Bilbo%'
 
 
 ### list orders grouped by customer showing the number of orders per customer. _Rattlesnake Canyon Grocery_ should have 18 orders.
@@ -81,13 +108,28 @@ Answer the following data queries. Keep track of the SQL you write by pasting it
 
 > There is more information about the COUNT clause on [W3 Schools](https://www.w3schools.com/sql/sql_count_avg_sum.asp)
 
+SELECT COUNT(o.customer_id) as orderCount, c.customer_id, company_name
+FROM orders o JOIN customers c
+ON o.customer_id = c.customer_id
+GROUP BY c.customer_id
+
+
+
 
 ### list customers names and the number of orders per customer. Sort the list by number of orders in descending order. _Save-a-lot Markets should be at the top with 31 orders followed by _Ernst Handle_ with 30 orders. Last should be _Centro comercial Moctezuma_ with 1 order.
 > This can be done by adding an ORDER BY clause to the previous answer
-
+SELECT COUNT(o.customer_id) as orderCount, c.customer_id, company_name
+FROM orders o JOIN customers c
+ON o.customer_id = c.customer_id
+GROUP BY c.customer_id
+ORDER BY orderCount DESC
 
 ### list orders grouped by customer's city showing number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders.
 > This is very similar to the previous two queries, however, it focuses on the City rather than the CustomerName
+SELECT COUNT(o.customer_id) AS orderCount, c.city
+FROM customers c JOIN orders o
+ON c.customer_id = o.customer_id
+GROUP BY c.city
 
 
 ## Data Normalization
@@ -102,6 +144,26 @@ Take the following data and normalize it into a 3NF database.
 | Bob         | Joe      | Horse    |            |            |            |            | No          | No           |
 | Sam         | Ginger   | Dog      | Miss Kitty | Cat        | Bubble     | Fish       | Yes         | No           |
 
+Person Table
+
+|Person ID |   Person Name |  Fenced Yard  |   City Dweller |
+|    1     |     Jane      |       No      |         Yes    |
+|    2     |     Bob       |       No      |         No     |
+|    3     |     Sam       |       Yes     |         No     |
+
+Pet table
+|Pet ID|   Person ID     |     PetName  |     Type    |
+|   1  |        1        |       Ellie  |      Dog    |
+|   2  |        1        |       Tiger  |      Cat    |
+|   3  |        1        |       Toby   |      Turtle |
+|   4  |        2        |       Joe    |      Horse  |
+|   5  |        3        |      Ginger  |      Dog    |
+|   6  |        3        |    Miss Kitty|      Cat    |
+|   7  |        3        |    Bubble    |      Fish   |
+|      |                 |              |
+|      |                 |              |
+|      |                 |              |
+
 ---
 ## Stretch Goals
 
@@ -109,7 +171,7 @@ Take the following data and normalize it into a 3NF database.
 > This is done with a DELETE query
 
 > In the WHERE clause, you can provide another list with an IN keyword this list can be the result of another SELECT query. Write a query to return a list of CustomerIDs that meet the criteria above. Pass that to the IN keyword of the WHERE clause as the list of IDs to be deleted
- 
+
 > Use a LEFT JOIN to join the Orders table onto the Customers table and check for a NULL value in the OrderID column
 
 ## Create Database and Table
