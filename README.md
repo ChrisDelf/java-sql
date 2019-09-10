@@ -75,6 +75,11 @@ WHERE length(company_name) > 20
 
 > Remember to convert your contact title to all upper case for case insenstive comparing so upper(contact_title)
 
+SELECT *
+FROM customers
+WHERE contact_title LIKE '%Market%'
+
+
 
 ### add a customer record for
 * customer id is 'SHIRE'
@@ -85,10 +90,16 @@ WHERE length(company_name) > 20
 * the postal code is '111'
 * the country is 'Middle Earth'
 > This can be done with the INSERT INTO clause
+INSERT INTO customers(customer_id, company_name, contact_name, address, city, postal_code, country)
+Values ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit-Hole', 'Bag End', '111', 'Middle Earth')
+
 
 
 ### update _Bilbo Baggins_ record so that the postal code changes to _"11122"_.
 > This can be done with UPDATE and WHERE clauses
+UPDATE customers
+SET postal_code = '11122'
+WHERE contact_name LIKE '%Bilbo%'
 
 
 ### list orders grouped by customer showing the number of orders per customer. _Rattlesnake Canyon Grocery_ should have 18 orders.
